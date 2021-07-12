@@ -34,8 +34,8 @@ if($OpenFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){
 
 
 Write-Progress "CSVをソート"
-$SortKey  = $Header | Out-GridView -PassThru -Title "ソートキーを選んでください"
-$C = $A + $B | ConvertFrom-CSV | Sort-Object ($SortKey + "変更区分")
+$PrimaryKey  = $Header | Out-GridView -PassThru -Title "主キーを選んでください"
+$C = $A + $B | ConvertFrom-CSV | Sort-Object ($PrimaryKey + "変更区分")
 
 Write-Progress "CSVを比較" -percentComplete 0
 $CompKey = $Header | Out-GridView -PassThru -Title "比較キーを選んでください"
@@ -49,8 +49,8 @@ for($i = 0; $i -lt $C.length - 1; $i++){
       $C[$i].変更区分 = "非表示"
       $C[$i+1].変更区分 = ""
     } elseif(
-      ($C[$i]   | Select-Object $SortKey | ConvertTo-Json) -eq
-      ($C[$i+1] | Select-Object $SortKey | ConvertTo-Json)
+      ($C[$i]   | Select-Object $PrimaryKey | ConvertTo-Json) -eq
+      ($C[$i+1] | Select-Object $PrimaryKey | ConvertTo-Json)
     ){
       $C[$i].変更区分 = "変更前"
       $C[$i+1].変更区分 = "変更後"
