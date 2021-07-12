@@ -35,7 +35,7 @@ if($OpenFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){
 
 Write-Progress "CSVをソート"
 $PrimaryKey  = $Header | Out-GridView -PassThru -Title "主キーを選んでください"
-$C = $A + $B | ConvertFrom-CSV | Sort-Object ($PrimaryKey + "変更区分")
+$C = $A + $B | ConvertFrom-CSV | Sort-Object ($PrimaryKey + "変更区分") -CaseSensitive
 
 Write-Progress "CSVを比較" -percentComplete 0
 $CompKey = $Header | Out-GridView -PassThru -Title "比較キーを選んでください"
