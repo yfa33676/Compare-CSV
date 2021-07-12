@@ -16,20 +16,33 @@ $OpenFileDialog.InitialDirectory = ".\"
 Write-Progress -Activity "変更前CSVの読み込み" -Status 読み込み開始
 $OpenFileDialog.Filename = "変更前.csv"
 if($OpenFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){
-  $Header = (Get-Content -Path $OpenFileDialog.Filename)[0].Split(",") | % Replace "`"" "" | % Trim
+  $AHeader = (Get-Content -Path $OpenFileDialog.Filename)[0]
   Write-Progress -Activity "変更前CSVの読み込み" -Status 読み込み中
   $A = Get-Content -Path $OpenFileDialog.Filename | % Insert 0 "削除,"
   Write-Progress -Activity "変更前CSVの読み込み" -Status 読み込み終了
   $A[0] = $A[0].Replace("削除", "変更区分")
+} else{
+  return
 }
 
 Write-Progress -Activity "変更後CSVの読み込み" -Status 読み込み開始
 $OpenFileDialog.Filename = "変更後.csv"
 if($OpenFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){
+  $BHeader = (Get-Content -Path $OpenFileDialog.Filename)[0]
   Write-Progress -Activity "変更後CSVの読み込み" -Status 読み込み中
   $B = Get-Content -Path $OpenFileDialog.Filename | % Insert 0 "追加,"
   Write-Progress -Activity "変更後CSVの読み込み" -Status 読み込み終了
   $B[0] = $B[0].Replace("追加", "非表示")
+} else{
+  return
+}
+
+if($AHeader -eq $BHeader){
+  $Header = $AHeader.Split(",") | % Replace "`"" "" | % Trim
+} else {
+  "ヘッダーが一致しません" | Out-Host
+  pause
+  return
 }
 
 
