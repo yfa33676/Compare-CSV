@@ -60,8 +60,18 @@ function Compare-Csv{
     }
 
     Write-Progress "CSVをソート"
-    $PrimaryKey  = $Header | Out-GridView -PassThru -Title "主キーを選んでください"
-    $C = $A + $B | ConvertFrom-CSV | Sort-Object ($PrimaryKey + "変更区分") -CaseSensitive
+    while($true){
+      $PrimaryKey  = $Header | Out-GridView -PassThru -Title "主キーを選んでください"
+      if ($PrimaryKey.count -eq 0) {
+        "少なくともひとつは主キーを選んでください" | Out-Host
+      } elseif($PrimaryKey.count -eq 1) {
+        $C = $A + $B | ConvertFrom-CSV | Sort-Object ($PrimaryKey,  "変更区分") -CaseSensitive
+        break
+      } else {
+        $C = $A + $B | ConvertFrom-CSV | Sort-Object ($PrimaryKey + "変更区分") -CaseSensitive
+        break
+      }
+    }
 
     Write-Progress "CSVを比較" -percentComplete 0
     $CompKey = $Header | Out-GridView -PassThru -Title "比較キーを選んでください"
