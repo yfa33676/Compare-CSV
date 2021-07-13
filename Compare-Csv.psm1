@@ -96,7 +96,7 @@ function Compare-Csv{
     }
 
     $C = $C | ? 変更区分 -ne "非表示"
-    $C | Out-GridView -title "比較結果"
+    $C | Out-GridView -title ("【変更前】" + ($ReferencePath | Split-Path -Leaf) + " - 【変更後】" + ($DifferencePath | Split-Path -Leaf))
 
     while($true){
       $Return = Read-Host "結果を出力しますか？(はい：Y、いいえ：N)"
