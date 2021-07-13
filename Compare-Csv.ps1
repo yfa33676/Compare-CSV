@@ -73,9 +73,17 @@ for($i = 0; $i -lt $C.length - 1; $i++){
 }
 
 $C = $C | ? 変更区分 -ne "非表示"
-$C | Out-GridView -title "比較結果" -PassThru | Out-Null
+$C | Out-GridView -title "比較結果"
 
-$SaveFileDialog.Filename = "比較結果.csv"
-if ($SaveFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){
-  $C | Export-Csv -Encoding Default -NoTypeInformation -Path $SaveFileDialog.Filename
+while($true){
+  $Return = Read-Host "結果を出力しますか？(はい：Y、いいえ：N)"
+  if ($Return -eq "Y"){
+    $SaveFileDialog.Filename = "比較結果.csv"
+    if ($SaveFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){
+      $C | Export-Csv -Encoding Default -NoTypeInformation -Path $SaveFileDialog.Filename
+    }
+  }
+  if ($Return -eq "N"){
+    break
+  }
 }
