@@ -1,3 +1,6 @@
+$ReferencePath = ""
+$DifferencePath  = ""
+
 # エンコーディング（SJIS）
 $OutputEncoding = [console]::OutputEncoding
 
@@ -14,28 +17,34 @@ $OpenFileDialog.Filter = "csvファイル(*.csv)|*.csv|すべてのファイル(*.*)|*.*"
 $OpenFileDialog.InitialDirectory = ".\"
 
 Write-Progress -Activity "変更前CSVの読み込み" -Status 読み込み開始
-$OpenFileDialog.Filename = "変更前.csv"
-if($OpenFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){
-  $AHeader = (Get-Content -Path $OpenFileDialog.Filename)[0]
-  Write-Progress -Activity "変更前CSVの読み込み" -Status 読み込み中
-  $A = Get-Content -Path $OpenFileDialog.Filename | % Insert 0 "削除,"
-  Write-Progress -Activity "変更前CSVの読み込み" -Status 読み込み終了
-  $A[0] = $A[0].Replace("削除", "変更区分")
-} else{
-  return
+if ($ReferencePath -eq ""){
+  $OpenFileDialog.Filename = "変更前.csv"
+  if($OpenFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){
+    $ReferencePath = $OpenFileDialog.Filename
+  } else{
+    return
+  }
 }
+$AHeader = (Get-Content -Path $ReferencePath)[0]
+Write-Progress -Activity "変更前CSVの読み込み" -Status 読み込み中
+$A = Get-Content -Path $ReferencePath | % Insert 0 "削除,"
+Write-Progress -Activity "変更前CSVの読み込み" -Status 読み込み終了
+$A[0] = $A[0].Replace("削除", "変更区分")
 
 Write-Progress -Activity "変更後CSVの読み込み" -Status 読み込み開始
-$OpenFileDialog.Filename = "変更後.csv"
-if($OpenFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){
-  $BHeader = (Get-Content -Path $OpenFileDialog.Filename)[0]
-  Write-Progress -Activity "変更後CSVの読み込み" -Status 読み込み中
-  $B = Get-Content -Path $OpenFileDialog.Filename | % Insert 0 "追加,"
-  Write-Progress -Activity "変更後CSVの読み込み" -Status 読み込み終了
-  $B[0] = $B[0].Replace("追加", "非表示")
-} else{
-  return
+if ($DifferencePath -eq ""){
+  $OpenFileDialog.Filename = "変更後.csv"
+  if($OpenFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){
+    $DifferencePath = $OpenFileDialog.Filename
+  } else{
+    return
+  }
 }
+$BHeader = (Get-Content -Path $DifferencePath)[0]
+Write-Progress -Activity "変更後CSVの読み込み" -Status 読み込み中
+$B = Get-Content -Path $DifferencePath | % Insert 0 "追加,"
+Write-Progress -Activity "変更後CSVの読み込み" -Status 読み込み終了
+$B[0] = $B[0].Replace("追加", "非表示")
 
 if($AHeader -eq $BHeader){
   $Header = $AHeader.Split(",") | % Replace "`"" "" | % Trim
