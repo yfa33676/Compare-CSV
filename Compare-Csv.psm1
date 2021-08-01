@@ -64,7 +64,6 @@ function Compare-Csv{
     # CSVをソート
     Write-Progress "CSVをソート" -Status 主キーの選択
     $PrimaryKey  = $Header -split "," | Out-GridView -PassThru -Title "主キーを選んでください"
-    $PrimaryKey.count | Out-Host
     while($true){
       if ($PrimaryKey.count -eq 0) {
         "少なくともひとつは主キーを選んでください" | Out-Host
