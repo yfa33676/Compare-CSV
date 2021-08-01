@@ -3,6 +3,7 @@ param(
   [string]$DifferencePath  = "" # 比較後CSVパス
 )
 
+Clear-Host
 # エンコーディング（SJIS）
 $OutputEncoding = [console]::OutputEncoding
 
