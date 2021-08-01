@@ -60,14 +60,16 @@ $DifferenceCSV = Get-Content -Path $DifferencePath | Select-Object -Skip 1 | % I
 # CSVをソート
 Write-Progress "CSVをソート" -Status 主キーの選択
 $PrimaryKey  = $Header -split "," | Out-GridView -PassThru -Title "主キーを選んでください"
-if ($PrimaryKey.count -eq 0) {
-  "少なくともひとつは主キーを選んでください" | Out-Host
-  
-} elseif($PrimaryKey.count -eq 1) {
-  $SortKey = $PrimaryKey,  "変更区分"
-  break
-} else {
-  $SortKey = $PrimaryKey + "変更区分"
+while($true){
+  if ($PrimaryKey.count -eq 0) {
+    "少なくともひとつは主キーを選んでください" | Out-Host
+  } elseif($PrimaryKey.count -eq 1) {
+    $SortKey = $PrimaryKey,  "変更区分"
+    break
+  } else {
+    $SortKey = $PrimaryKey + "変更区分"
+    break
+  }
 }
 $MergeData = $Header.Insert(0,"変更区分,"),$ReferenceCSV,$DifferenceCSV | ConvertFrom-CSV | Sort-Object $SortKey -CaseSensitive
 
